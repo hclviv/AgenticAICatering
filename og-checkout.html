@@ -269,8 +269,8 @@
         // 1) Place order
         const placeRes = await fetch(`${WIREMOCK_BASE_URL}/og/order/place`, {
           method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams({ payload: JSON.stringify(payload) })
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
         });
         if (!placeRes.ok) throw new Error(`Place order failed: ${placeRes.status}`);
         const order = await placeRes.json();
