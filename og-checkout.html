@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Olive Garden Catering Checkout (Demo)</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 0; background: #fafafa; color: #111; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 22px 16px 40px; }
+    .grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 14px; }
+    @media (max-width: 920px) { .grid { grid-template-columns: 1fr; } }
+    .card { background: #fff; border: 1px solid #e8e8e8; border-radius: 14px; padding: 16px; box-shadow: 0 1px 10px rgba(0,0,0,0.04); }
+    h1 { margin: 0 0 6px; font-size: 20px; }
+    h2 { margin: 0 0 10px; font-size: 16px; }
+    .muted { color: #666; font-size: 13px; margin-top: 6px; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; }
+    label { display: block; font-size: 13px; color: #333; margin: 10px 0 6px; }
+    input, select, textarea {
+      width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; background: #fff;
+      font-size: 14px;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #e6e6e6; border-radius: 999px; padding: 8px 10px; background: #fff; }
+    .pill input { width: auto; }
+    .btn {
+      padding: 12px 14px; border: 0; border-radius: 12px; cursor: pointer;
+      background: #111; color: #fff; width: 100%; font-weight: 600; font-size: 14px;
+    }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btnSecondary { background: #f3f3f3; color: #111; border: 1px solid #e6e6e6; }
+    .hr { height: 1px; background: #eee; margin: 14px 0; }
+    .items { margin: 0; padding-left: 18px; color: #333; }
+    .kpi { display: flex; justify-content: space-between; margin: 6px 0; color: #333; }
+    .kpi b { font-weight: 700; }
+    .banner { border-radius: 12px; padding: 10px 12px; background: #f5f5f5; border: 1px solid #e8e8e8; font-size: 13px; }
+    .success { background: #eefaf0; border-color: #cfead6; }
+    .error { background: #fff1f1; border-color: #f2c6c6; }
+    code { background: #f3f3f3; padding: 2px 6px; border-radius: 6px; }
+    a { color: #111; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row" style="justify-content: space-between; align-items: baseline;">
+      <div>
+        <h1>Olive Garden Catering Checkout <span class="muted">(Demo)</span></h1>
+        <div class="muted">Cart: <code id="cartIdLabel"></code></div>
+      </div>
+      <div class="muted">Payment mode: <b>Pay at pickup</b></div>
+    </div>
+
+    <div id="banner" class="banner" style="margin: 12px 0; display:none;"></div>
+
+    <div class="grid">
+      <!-- LEFT: Checkout form -->
+      <div class="card">
+        <h2>Order Instructions</h2>
+
+        <label for="guests">Number of Guests</label>
+        <input id="guests" type="number" min="1" value="8" />
+
+        <label>Complimentary Items</label>
+        <div class="row">
+          <label class="pill"><input type="checkbox" value="SILVERWARE" checked> Silverware</label>
+          <label class="pill"><input type="checkbox" value="PLATES" checked> Plates</label>
+          <label class="pill"><input type="checkbox" value="BOWLS"> Bowls</label>
+          <label class="pill"><input type="checkbox" value="CUPS"> Cups</label>
+          <label class="pill"><input type="checkbox" value="ICE"> Ice</label>
+        </div>
+
+        <label for="instructions">Special Instructions</label>
+        <textarea id="instructions" placeholder="e.g., Call when ready. No-contact curbside pickup."></textarea>
+
+        <div class="hr"></div>
+
+        <h2>Pickup Method: Curbside</h2>
+
+        <div class="row">
+          <div style="flex:1; min-width: 180px;">
+            <label for="vehicleType">Vehicle Type</label>
+            <select id="vehicleType">
+              <option>SUV</option>
+              <option>Sedan</option>
+              <option>Truck</option>
+              <option>Van</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width: 180px;">
+            <label for="vehicleColor">Vehicle Color</label>
+            <select id="vehicleColor">
+              <option>Black</option>
+              <option>White</option>
+              <option>Gray</option>
+              <option>Blue</option>
+              <option>Red</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="phone">Mobile Phone</label>
+        <input id="phone" type="tel" placeholder="2035551212" value="2035551212" />
+
+        <div class="hr"></div>
+
+        <h2>Gratuity</h2>
+        <div class="row">
+          <label class="pill"><input type="radio" name="tip" value="10"> 10%</label>
+          <label class="pill"><input type="radio" name="tip" value="15" checked> 15%</label>
+          <label class="pill"><input type="radio" name="tip" value="20"> 20%</label>
+          <label class="pill"><input type="radio" name="tip" value="custom"> Custom</label>
+        </div>
+
+        <div id="customTipWrap" style="display:none;">
+          <label for="customTip">Custom gratuity percent</label>
+          <input id="customTip" type="number" min="0" max="100" value="15" />
+        </div>
+
+        <div class="hr"></div>
+
+        <button id="placeOrderBtn" class="btn">Place Order</button>
+        <button id="resetBtn" class="btn btnSecondary" style="margin-top:10px;">Reset Form</button>
+
+        <div class="muted" style="margin-top:10px;">
+          This demo places the order, then simulates POS handoff via WireMock.
+        </div>
+      </div>
+
+      <!-- RIGHT: Cart summary -->
+      <div class="card">
+        <h2>Cart Summary</h2>
+        <div id="cartSummary" class="muted">Loading cart...</div>
+        <div class="hr"></div>
+
+        <h2>Totals</h2>
+        <div class="kpi"><span>Subtotal</span><span id="subtotal">$—</span></div>
+        <div class="kpi"><span>Tax</span><span id="tax">$—</span></div>
+        <div class="kpi"><span>Fees</span><span id="fees">$—</span></div>
+        <div class="kpi"><span>Gratuity</span><span id="gratuity">$—</span></div>
+        <div class="hr"></div>
+        <div class="kpi" style="font-size:16px;"><b>Total</b><b id="total">$—</b></div>
+
+        <div class="hr"></div>
+        <div id="result" class="banner" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ✅ Set this to your WireMock Cloud base URL
+    const WIREMOCK_BASE_URL = "https://m99yg.wiremockapi.cloud/";
+
+    const $ = (id) => document.getElementById(id);
+
+    function getCartId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("cartId") || "CART-10001";
+    }
+
+    function showBanner(msg, type) {
+      const banner = $("banner");
+      banner.style.display = "block";
+      banner.className = "banner " + (type === "error" ? "error" : type === "success" ? "success" : "");
+      banner.textContent = msg;
+    }
+
+    function hideBanner() {
+      $("banner").style.display = "none";
+    }
+
+    function fmtMoney(n) {
+      if (typeof n !== "number" || isNaN(n)) return "$—";
+      return n.toLocaleString(undefined, { style: "currency", currency: "USD" });
+    }
+
+    function getSelectedTipPercent() {
+      const selected = document.querySelector('input[name="tip"]:checked')?.value || "15";
+      if (selected === "custom") {
+        const val = parseFloat($("customTip").value);
+        return isNaN(val) ? 0 : val;
+      }
+      return parseFloat(selected);
+    }
+
+    function getComplimentaryItems() {
+      return Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+    }
+
+    async function loadCart(cartId) {
+      const res = await fetch(`${WIREMOCK_BASE_URL}/og/cart/${encodeURIComponent(cartId)}`);
+      if (!res.ok) throw new Error(`Cart fetch failed: ${res.status}`);
+      return res.json();
+    }
+
+    function renderCart(cart) {
+      const items = cart.items || [];
+      const ul = document.createElement("ul");
+      ul.className = "items";
+      items.forEach(i => {
+        const li = document.createElement("li");
+        li.textContent = `${i.qty} × ${i.name}`;
+        ul.appendChild(li);
+      });
+
+      const summary = $("cartSummary");
+      summary.innerHTML = "";
+      summary.appendChild(ul);
+
+      const p = cart.pricing || {};
+      $("subtotal").textContent = fmtMoney(p.subtotal);
+      $("tax").textContent = fmtMoney(p.tax);
+      $("fees").textContent = fmtMoney(p.fees);
+
+      // gratuity in cart is mocked as 0; we'll compute on client for display
+      const tipPct = getSelectedTipPercent();
+      const gratuity = (typeof p.subtotal === "number") ? (p.subtotal * (tipPct / 100)) : 0;
+      $("gratuity").textContent = fmtMoney(gratuity);
+
+      const total = (typeof p.total === "number") ? (p.total + gratuity) : 0;
+      $("total").textContent = fmtMoney(total);
+    }
+
+    function hookTipControls() {
+      const radios = document.querySelectorAll('input[name="tip"]');
+      radios.forEach(r => r.addEventListener("change", async () => {
+        $("customTipWrap").style.display = (document.querySelector('input[name="tip"]:checked')?.value === "custom") ? "block" : "none";
+        try {
+          const cart = await loadCart(getCartId());
+          renderCart(cart);
+        } catch {}
+      }));
+
+      $("customTip").addEventListener("input", async () => {
+        if (document.querySelector('input[name="tip"]:checked')?.value !== "custom") return;
+        try {
+          const cart = await loadCart(getCartId());
+          renderCart(cart);
+        } catch {}
+      });
+    }
+
+    async function placeOrderFlow(cartId) {
+      hideBanner();
+      $("result").style.display = "none";
+      $("placeOrderBtn").disabled = true;
+
+      const phone = $("phone").value.trim();
+      if (!phone) {
+        showBanner("Mobile phone is required for curbside pickup.", "error");
+        $("placeOrderBtn").disabled = false;
+        return;
+      }
+
+      const payload = {
+        cartId,
+        numberOfGuests: parseInt($("guests").value, 10) || 1,
+        complimentaryItems: getComplimentaryItems(),
+        specialInstructions: $("instructions").value.trim(),
+        curbside: {
+          vehicleType: $("vehicleType").value,
+          vehicleColor: $("vehicleColor").value,
+          mobilePhone: phone
+        },
+        gratuityPercent: getSelectedTipPercent()
+      };
+
+      try {
+        // 1) Place order
+        const placeRes = await fetch(`${WIREMOCK_BASE_URL}/og/order/place`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (!placeRes.ok) throw new Error(`Place order failed: ${placeRes.status}`);
+        const order = await placeRes.json();
+
+        // 2) POS handoff
+        const posRes = await fetch(`${WIREMOCK_BASE_URL}${order.next.posHandoffUrl}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: order.orderId })
+        });
+        if (!posRes.ok) throw new Error(`POS handoff failed: ${posRes.status}`);
+        const pos = await posRes.json();
+
+        const result = $("result");
+        result.style.display = "block";
+        result.className = "banner success";
+        result.innerHTML = `
+          <div><b>Order Confirmed</b></div>
+          <div class="muted">Order ID: <code>${order.orderId}</code></div>
+          <div class="muted">POS Status: <b>${pos.status}</b> (POS Order: <code>${pos.posOrderId}</code>)</div>
+          <div class="muted">Pickup: <b>${order.pickup.method}</b> • Ready around <code>${order.pickup.estimatedReadyTime}</code></div>
+        `;
+      } catch (e) {
+        showBanner(String(e.message || e), "error");
+      } finally {
+        $("placeOrderBtn").disabled = false;
+      }
+    }
+
+    function hookReset() {
+      $("resetBtn").addEventListener("click", async () => {
+        $("guests").value = 8;
+        $("instructions").value = "";
+        $("vehicleType").value = "SUV";
+        $("vehicleColor").value = "Black";
+        $("phone").value = "2035551212";
+        document.querySelectorAll('input[type="checkbox"]').forEach((cb) => cb.checked = (cb.value === "SILVERWARE" || cb.value === "PLATES"));
+        document.querySelector('input[name="tip"][value="15"]').checked = true;
+        $("customTipWrap").style.display = "none";
+        $("result").style.display = "none";
+        hideBanner();
+
+        try {
+          const cart = await loadCart(getCartId());
+          renderCart(cart);
+        } catch {}
+      });
+    }
+
+    async function init() {
+      const cartId = getCartId();
+      $("cartIdLabel").textContent = cartId;
+
+      hookTipControls();
+      hookReset();
+
+      $("placeOrderBtn").addEventListener("click", () => placeOrderFlow(cartId));
+
+      try {
+        const cart = await loadCart(cartId);
+        renderCart(cart);
+      } catch (e) {
+        showBanner("Could not load cart. Check WIREMOCK_BASE_URL and cart stub.", "error");
+        $("cartSummary").textContent = "Unable to load cart.";
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
