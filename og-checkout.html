@@ -188,7 +188,7 @@
     }
 
     async function loadCart(cartId) {
-      const res = await fetch(`${WIREMOCK_BASE_URL}/og/cart/${encodeURIComponent(cartId)}`);
+      const res = await fetch(`${WIREMOCK_BASE_URL}/jj/cart/${encodeURIComponent(cartId)}`);
       if (!res.ok) throw new Error(`Cart fetch failed: ${res.status}`);
       return res.json();
     }
@@ -267,7 +267,7 @@
 
       try {
         // 1) Place order
-        const placeRes = await fetch(`${WIREMOCK_BASE_URL}/og/order/place`, {
+        const placeRes = await fetch(`${WIREMOCK_BASE_URL}/jj/order/place`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
